@@ -1,6 +1,6 @@
 import { type User, type ApiResponse } from "@/types/db";
 import { getAuthToken } from "../utils";
-import { productionUrl } from "@/lib/utils";
+import { developUrl, productionUrl } from "@/lib/utils";
 
 export const getUserById = async ({ userId }: { userId: string }) => {
   const token = await getAuthToken();
@@ -8,7 +8,7 @@ export const getUserById = async ({ userId }: { userId: string }) => {
   const userRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/user/${userId}`
-      : `http://localhost:3000/api/v1/user/${userId}`,
+      : `${developUrl}/api/v1/user/${userId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ export const updateUser = async ({
   const userRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/user-auth/${userId}`
-      : `http://localhost:3000/api/v1/user-auth/${userId}`,
+      : `${developUrl}/api/v1/user-auth/${userId}`,
     {
       method: "PUT",
       body,

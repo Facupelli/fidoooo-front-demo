@@ -1,6 +1,6 @@
 import { type ApiResponse, type User } from "@/types/db";
 import { getAuthToken } from "../utils";
-import { productionUrl } from "@/lib/utils";
+import { developUrl, productionUrl } from "@/lib/utils";
 
 export const sendMessage = async ({
   to,
@@ -20,7 +20,7 @@ export const sendMessage = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/w/messenger`
-      : "http://localhost:3000/api/v1/business/w/messenger",
+      : `${developUrl}/api/v1/business/w/messenger`,
     {
       method: "POST",
       body,
@@ -46,7 +46,7 @@ export const uploadMedia = async ({ file }: { file: File }) => {
     const rawResponse = await fetch(
       process.env.NODE_ENV === "production"
         ? `${productionUrl}/api/v1/business/w/messenger/media`
-        : "http://localhost:3000/api/v1/business/w/messenger/media",
+        : `${developUrl}/api/v1/business/w/messenger/media`,
       {
         method: "POST",
         body: formData,
@@ -88,7 +88,7 @@ export const sendTemplateMessage = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/w/messenger`
-      : "http://localhost:3000/api/v1/business/w/messenger",
+      : `${developUrl}/api/v1/business/w/messenger`,
     {
       method: "POST",
       body,

@@ -4,7 +4,7 @@ import { type ApiResponse, type Business } from "@/types/db";
 import { type WhatsAppMessageTemplate } from "@/types/whatsapp";
 import { getAuthToken } from "../utils";
 import { revalidateTag } from "next/cache";
-import { productionUrl } from "@/lib/utils";
+import { productionUrl, developUrl } from "@/lib/utils";
 
 export const getBusinessById = async ({
   businessId,
@@ -16,7 +16,7 @@ export const getBusinessById = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/by-id/${businessId}`
-      : `http://localhost:3000/api/v1/business/by-id/${businessId}`,
+      : `${developUrl}/api/v1/business/by-id/${businessId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ export const getMessageTemplates = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/w/messenger/templates?category=${templateCategory}`
-      : `http://localhost:3000/api/v1/business/w/messenger/templates?category=${templateCategory}`,
+      : `${developUrl}/api/v1/business/w/messenger/templates?category=${templateCategory}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ export const sendCollaboratorInvitation = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/invitation`
-      : `http://localhost:3000/api/v1/business/invitation`,
+      : `${developUrl}/api/v1/business/invitation`,
     {
       method: "POST",
       body,
@@ -110,7 +110,7 @@ export const assignUserToBusiness = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/assing-user-to-business`
-      : `http://localhost:3000/api/v1/business/assing-user-to-business`,
+      : `${developUrl}/api/v1/business/assing-user-to-business`,
     {
       method: "POST",
       body,

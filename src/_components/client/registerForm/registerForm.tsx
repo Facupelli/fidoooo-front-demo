@@ -66,7 +66,6 @@ const RegisterForm = () => {
       formData.append("businessId", businessId);
       await createCollaboratorUser(formData);
     } else {
-      console.log("ACA");
       await registerAsCollaborator(formData);
     }
 

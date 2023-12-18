@@ -7,7 +7,7 @@ import {
   type Session,
 } from "@/types/db";
 import { getAuthToken } from "../utils";
-import { productionUrl } from "@/lib/utils";
+import { developUrl, productionUrl } from "@/lib/utils";
 
 export const getChatsByChannel = async ({
   channelId,
@@ -19,7 +19,7 @@ export const getChatsByChannel = async ({
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/conversation?channelId=${channelId}`
-      : `http://localhost:3000/api/v1/conversation?channelId=${channelId}`,
+      : `${developUrl}/api/v1/conversation?channelId=${channelId}`,
     {
       // cache: "no-store",
       headers: {
@@ -43,7 +43,7 @@ export const getChatById = async ({
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/conversation/by-id?conversationId=${conversationId}`
-      : `http://localhost:3000/api/v1/conversation/by-id?conversationId=${conversationId}`,
+      : `${developUrl}/api/v1/conversation/by-id?conversationId=${conversationId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ export const getChatSession = async ({
   const sessionRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/session/${conversationId}`
-      : `http://localhost:3000/api/v1/conversation/session/${conversationId}`,
+      : `${developUrl}/api/v1/conversation/session/${conversationId}`,
     {
       // cache: "no-store
       headers: {
@@ -98,7 +98,7 @@ export const updateChatStatus = async ({
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/session/status`
-      : "http://localhost:3000/api/v1/conversation/status",
+      : `${developUrl}/api/v1/conversation/status`,
     {
       method: "PATCH",
       body,
@@ -129,7 +129,7 @@ export const updateChatLabel = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/label/assign-to-chat`
-      : "http://localhost:3000/api/v1/business/label/assign-to-chat",
+      : `${developUrl}/api/v1/business/label/assign-to-chat`,
     {
       method: "PATCH",
       body,
@@ -160,7 +160,7 @@ export const setBotIsActive = async ({
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/conversation/is-bot-active`
-      : "http://localhost:3000/api/v1/conversation/is-bot-active",
+      : `${developUrl}/api/v1/conversation/is-bot-active`,
     {
       method: "POST",
       body,
@@ -187,7 +187,7 @@ export const setChatReaded = async ({ chatId }: { chatId: string }) => {
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/conversation`
-      : "http://localhost:3000/api/v1/conversation",
+      : `${developUrl}/api/v1/conversation`,
     {
       method: "PATCH",
       body,
@@ -225,7 +225,7 @@ export const sendBotFirstNode = async ({
   const chatRawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/business/w/messenger/first-node`
-      : "http://localhost:3000/api/v1/business/w/messenger/first-node",
+      : `${developUrl}/api/v1/business/w/messenger/first-node`,
     {
       method: "POST",
       body,
@@ -254,7 +254,7 @@ export const assignUserToChat = async ({
   const rawResponse = await fetch(
     process.env.NODE_ENV === "production"
       ? `${productionUrl}/api/v1/conversation/current-user`
-      : `http://localhost:3000/api/v1/conversation/current-user`,
+      : `${developUrl}/api/v1/conversation/current-user`,
     {
       method: "PATCH",
       body,

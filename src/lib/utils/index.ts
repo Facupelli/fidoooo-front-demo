@@ -21,4 +21,5 @@ export const generateLabelBackgroundColor = (
   return `rgba(${r}, ${g}, ${b}, ${adjustedOpacity})`;
 };
 
-export const productionUrl = "";
+export const productionUrl = "https://api-4kdjuj6duq-uc.a.run.app";
+export const developUrl = "http://localhost:3000";
