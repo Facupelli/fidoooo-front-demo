@@ -1,7 +1,7 @@
 "use server";
 
 import { type LabelRGBAColor, type ApiResponse, type Label } from "@/types/db";
-import { getAuthToken } from "../utils";
+import { getAuthToken, productionUrl } from "../utils";
 import { revalidateTag } from "next/cache";
 
 export const createLabel = async ({
@@ -16,7 +16,9 @@ export const createLabel = async ({
   const body = JSON.stringify({ name, color });
 
   const labelRawResponse = await fetch(
-    "http://localhost:3000/api/v1/business/label",
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/label`
+      : "http://localhost:3000/api/v1/business/label",
     {
       method: "POST",
       body,
@@ -47,7 +49,9 @@ export const updateLabel = async ({
   const body = JSON.stringify({ id, name, color });
 
   const labelRawResponse = await fetch(
-    "http://localhost:3000/api/v1/business/label",
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/label`
+      : "http://localhost:3000/api/v1/business/label",
     {
       method: "PATCH",
       body,
@@ -78,7 +82,9 @@ export const deleteLabel = async ({
   const body = JSON.stringify({ id, name, color });
 
   const labelRawResponse = await fetch(
-    "http://localhost:3000/api/v1/business/label",
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/label`
+      : "http://localhost:3000/api/v1/business/label",
     {
       method: "DELETE",
       body,

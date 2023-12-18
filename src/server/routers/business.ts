@@ -2,7 +2,7 @@
 
 import { type ApiResponse, type Business } from "@/types/db";
 import { type WhatsAppMessageTemplate } from "@/types/whatsapp";
-import { getAuthToken } from "../utils";
+import { getAuthToken, productionUrl } from "../utils";
 import { revalidateTag } from "next/cache";
 
 export const getBusinessById = async ({
@@ -13,7 +13,9 @@ export const getBusinessById = async ({
   const token = await getAuthToken();
 
   const rawResponse = await fetch(
-    `http://localhost:3000/api/v1/business/by-id/${businessId}`,
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/by-id/${businessId}`
+      : `http://localhost:3000/api/v1/business/by-id/${businessId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -38,7 +40,9 @@ export const getMessageTemplates = async ({
   const token = await getAuthToken();
 
   const rawResponse = await fetch(
-    `http://localhost:3000/api/v1/business/w/messenger/templates?category=${templateCategory}`,
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/w/messenger/templates?category=${templateCategory}`
+      : `http://localhost:3000/api/v1/business/w/messenger/templates?category=${templateCategory}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -67,7 +71,9 @@ export const sendCollaboratorInvitation = async ({
   const body = JSON.stringify({ senderId, receiverEmail, labels });
 
   const rawResponse = await fetch(
-    `http://localhost:3000/api/v1/business/invitation`,
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/invitation`
+      : `http://localhost:3000/api/v1/business/invitation`,
     {
       method: "POST",
       body,
@@ -101,7 +107,9 @@ export const assignUserToBusiness = async ({
   const body = JSON.stringify({ businessId, receiverEmail, labels });
 
   const rawResponse = await fetch(
-    `http://localhost:3000/api/v1/business/assing-user-to-business`,
+    process.env.NODE_ENV === "production"
+      ? `${productionUrl}/api/v1/business/assing-user-to-business`
+      : `http://localhost:3000/api/v1/business/assing-user-to-business`,
     {
       method: "POST",
       body,

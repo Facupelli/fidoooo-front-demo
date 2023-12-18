@@ -12,3 +12,5 @@ export const getAuthToken = () => {
 
   return token as unknown as Promise<string>;
 };
+
+export const productionUrl = "";

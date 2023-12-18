@@ -7,7 +7,7 @@ import { getStorage } from "firebase/storage";
 
 // PRODUCTION
 const firebaseConfig = {
-  apiKey: "AIzaSyD4LC-R1GlHI68zX03rPkcNzlwoPLy_rgs",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "fidooo-bot-prod.firebaseapp.com",
   projectId: "fidooo-bot-prod",
   storageBucket: "fidooo-bot-prod.appspot.com",
