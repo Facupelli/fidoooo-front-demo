@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const getAuthToken = () => {
+export const getAuthToken = async () => {
   const token = cookies().get("token")?.value ?? "";
 
   if (!token) {
@@ -12,5 +12,3 @@ export const getAuthToken = () => {
 
   return token as unknown as Promise<string>;
 };
-
-export const productionUrl = "";
