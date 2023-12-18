@@ -13,6 +13,7 @@ export const env = createEnv({
     FIREBASE_CLIENT_EMAIL: z.string(),
     FIREBASE_REALTIME_URL: z.string(),
     FIREBASE_API_KEY: z.string(),
+    FIREBASE_SERVICE_ACCOUNT_KEY: z.string()
   },
 
   /**
@@ -35,6 +36,7 @@ export const env = createEnv({
     FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
     FIREBASE_REALTIME_URL: process.env.FIREBASE_REALTIME_URL,
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    FIREBASE_SERVICE_ACCOUNT_KEY: process.env.FIREBASE_SERVICE_ACCOUNT_KEY
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
