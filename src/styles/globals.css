@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary-purple: 246 40% 35%;
+    --primary-purple-variant: 246 40% 20%;
+
+    --secondary-purple: 224 48% 94%;
+    --secondary-purple-variant: 0 2% 94% 0.54;
+
+    --f-black: 0 0% 17%;
+    --dark-gray: 0 0% 37%;
+    --mid-gray: 0 0% 64%;
+    --light-gray: 0 0% 85%;
+    --pale-gray: 0 0% 97%;
+
+    --error: 0 100% 40%;
+
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    --primary: 246 40% 35%;
+    --primary-foreground: 246 40% 20%;
+
+    --secondary: 224 48% 94%;
+    --secondary-foreground: 0 2% 94% 0.54;
+
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 0 0% 97%;
+    --primary-foreground: 0 0% 85%;
+
+    --secondary: 0 0% 64%;
+    --secondary-foreground: 0 0% 37%;
+
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Webkit (Chrome, Edge, Safari) */
+  .scrollbar::-webkit-scrollbar {
+    width: 20px;
+    height: 20px;
+    background-color: #fbfbfb;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #fbfbfb;
+    width: 20px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--light-gray));
+    border-radius: 100vh;
+    border: 6px solid #fbfbfb;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--mid-gray));
+  }
+
+  /* Firefox */
+
+  .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--light-gray)) #fbfbfb;
+  }
+
+  /* FIDOOO DESIGN SYSTEM - TEXTFIELD */
+
+  .fido_input {
+    font-size: 16.2px;
+    color: hsl(0 0% 17%);
+    padding: 0px 12px;
+    font-weight: 400;
+    height: 46px;
+    padding-top: 6px;
+    border-radius: 5px;
+    border: 1px solid hsl(0 0% 17%);
+    background-color: transparent;
+    /* background-color: hsl(224 48% 94%); */
+  }
+
+  .fido_input::placeholder {
+    color: transparent !important;
+  }
+
+  .fido_input:placeholder-shown ~ .fido_label {
+    font-size: 16px;
+    cursor: text;
+    top: 50%;
+  }
+
+  .fido_label {
+    position: absolute;
+    transform: translateY(-50%);
+    top: 10px;
+    display: block;
+    transition: 0.2s;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 0px 12px;
+    color: hsl(0 0% 64%);
+  }
+
+  .fido_input:focus ~ .fido_label {
+    position: absolute;
+    top: 10px;
+    display: block;
+    transition: 0.2s;
+    font-size: 12px;
+  }
+
+  .fido_input:focus {
+    padding-top: 6px;
+    outline: none;
+    box-shadow: none !important;
+  }
+
+  .fido_input:focus-visible {
+    outline: none;
+    box-shadow: none !important;
+  }
+}
