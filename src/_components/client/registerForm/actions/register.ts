@@ -4,15 +4,12 @@ import { redirect } from "next/navigation";
 import { type ApiResponse, type User } from "@/types/db";
 import { getAuthToken } from "@/server/utils";
 import { revalidateTag } from "next/cache";
-import { developUrl, productionUrl } from "@/lib/utils";
 
 export const createCollaboratorUser = async (newUser: FormData) => {
   const token = await getAuthToken();
 
   const res = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/business/collaborator`
-      : `${developUrl}/api/v1/business/collaborator`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/collaborator`,
     {
       method: "POST",
       body: newUser,
@@ -34,9 +31,7 @@ export const createCollaboratorUser = async (newUser: FormData) => {
 
 export const registerAsCollaborator = async (newUser: FormData) => {
   const res = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/user-auth/collaborator`
-      : `${developUrl}/api/v1/user-auth/collaborator`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user-auth/collaborator`,
     {
       method: "POST",
       body: newUser,

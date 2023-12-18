@@ -3,7 +3,6 @@
 import { type LabelRGBAColor, type ApiResponse, type Label } from "@/types/db";
 import { getAuthToken } from "../utils";
 import { revalidateTag } from "next/cache";
-import { developUrl, productionUrl } from "@/lib/utils";
 
 export const createLabel = async ({
   name,
@@ -17,9 +16,7 @@ export const createLabel = async ({
   const body = JSON.stringify({ name, color });
 
   const labelRawResponse = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/business/label`
-      : `${developUrl}/api/v1/business/label`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/label`,
     {
       method: "POST",
       body,
@@ -50,9 +47,7 @@ export const updateLabel = async ({
   const body = JSON.stringify({ id, name, color });
 
   const labelRawResponse = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/business/label`
-      : `${developUrl}/api/v1/business/label`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/label`,
     {
       method: "PATCH",
       body,
@@ -83,9 +78,7 @@ export const deleteLabel = async ({
   const body = JSON.stringify({ id, name, color });
 
   const labelRawResponse = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/business/label`
-      : `${developUrl}/api/v1/business/label`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/label`,
     {
       method: "DELETE",
       body,

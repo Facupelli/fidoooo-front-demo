@@ -20,6 +20,3 @@ export const generateLabelBackgroundColor = (
   const adjustedOpacity = a * (selectedLabelId === labelId ? 1 : 0.2);
   return `rgba(${r}, ${g}, ${b}, ${adjustedOpacity})`;
 };
-
-export const productionUrl = "https://api-4kdjuj6duq-uc.a.run.app";
-export const developUrl = "http://localhost:3000";

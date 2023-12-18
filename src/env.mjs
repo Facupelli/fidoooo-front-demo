@@ -8,12 +8,7 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
-    FIREBASE_PROJECT_ID: z.string(),
-    FIREBASE_PRIVATE_KEY: z.string(),
-    FIREBASE_CLIENT_EMAIL: z.string(),
-    FIREBASE_REALTIME_URL: z.string(),
-    FIREBASE_API_KEY: z.string(),
-    FIREBASE_SERVICE_ACCOUNT_KEY: z.string()
+    FIREBASE_SERVICE_ACCOUNT_KEY: z.string(),
   },
 
   /**
@@ -22,7 +17,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_FIREBASE_API_KEY: z.string(),
+    NEXT_PUBLIC_API_URL: z.string(),
+    NEXT_PUBLIC_FIREBASE_CONFIG: z.string(),
   },
 
   /**
@@ -31,13 +27,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
-    FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
-    FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
-    FIREBASE_REALTIME_URL: process.env.FIREBASE_REALTIME_URL,
-    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    NEXT_PUBLIC_FIREBASE_CONFIG: process.env.NEXT_PUBLIC_FIREBASE_CONFIG,
     FIREBASE_SERVICE_ACCOUNT_KEY: process.env.FIREBASE_SERVICE_ACCOUNT_KEY,
-    NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

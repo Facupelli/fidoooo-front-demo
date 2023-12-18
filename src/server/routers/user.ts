@@ -1,20 +1,18 @@
 import { type User, type ApiResponse } from "@/types/db";
 import { getAuthToken } from "../utils";
-import { developUrl, productionUrl } from "@/lib/utils";
 
 export const getUserById = async ({ userId }: { userId: string }) => {
   const token = await getAuthToken();
 
   const userRawResponse = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/user/${userId}`
-      : `${developUrl}/api/v1/user/${userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     },
   );
+
   const userResponse: ApiResponse<User> = await userRawResponse.json();
   const user = userResponse.data;
 
@@ -45,9 +43,7 @@ export const updateUser = async ({
   const body = JSON.stringify(business ? { ...user, business } : { ...user });
 
   const userRawResponse = await fetch(
-    process.env.NODE_ENV === "production"
-      ? `${productionUrl}/api/v1/user-auth/${userId}`
-      : `${developUrl}/api/v1/user-auth/${userId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user-auth/${userId}`,
     {
       method: "PUT",
       body,
