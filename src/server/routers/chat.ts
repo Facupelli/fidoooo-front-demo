@@ -208,7 +208,7 @@ export const sendBotFirstNode = async ({
   });
 
   const chatRawResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/w/messenger/first-node`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/bot/first-node`,
     {
       method: "POST",
       body,
