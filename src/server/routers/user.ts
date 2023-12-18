@@ -1,5 +1,6 @@
 import { type User, type ApiResponse } from "@/types/db";
-import { getAuthToken, productionUrl } from "../utils";
+import { getAuthToken } from "../utils";
+import { productionUrl } from "@/lib/utils";
 
 export const getUserById = async ({ userId }: { userId: string }) => {
   const token = await getAuthToken();

@@ -1,8 +1,9 @@
 "use server";
 
 import { type LabelRGBAColor, type ApiResponse, type Label } from "@/types/db";
-import { getAuthToken, productionUrl } from "../utils";
+import { getAuthToken } from "../utils";
 import { revalidateTag } from "next/cache";
+import { productionUrl } from "@/lib/utils";
 
 export const createLabel = async ({
   name,

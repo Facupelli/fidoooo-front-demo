@@ -1,5 +1,6 @@
 import { type ApiResponse, type User } from "@/types/db";
-import { getAuthToken, productionUrl } from "../utils";
+import { getAuthToken } from "../utils";
+import { productionUrl } from "@/lib/utils";
 
 export const sendMessage = async ({
   to,

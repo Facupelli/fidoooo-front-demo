@@ -2,8 +2,9 @@
 
 import { type ApiResponse, type Business } from "@/types/db";
 import { type WhatsAppMessageTemplate } from "@/types/whatsapp";
-import { getAuthToken, productionUrl } from "../utils";
+import { getAuthToken } from "../utils";
 import { revalidateTag } from "next/cache";
+import { productionUrl } from "@/lib/utils";
 
 export const getBusinessById = async ({
   businessId,

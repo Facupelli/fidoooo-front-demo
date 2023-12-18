@@ -6,7 +6,8 @@ import {
   type Chat,
   type Session,
 } from "@/types/db";
-import { getAuthToken, productionUrl } from "../utils";
+import { getAuthToken } from "../utils";
+import { productionUrl } from "@/lib/utils";
 
 export const getChatsByChannel = async ({
   channelId,
