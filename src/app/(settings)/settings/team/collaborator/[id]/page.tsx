@@ -19,14 +19,15 @@ export default async function EditCollaboratorPage({
 
   const { uid } = await adminAuth.verifyIdToken(token);
 
-  const userData = api.user.getUserById({ userId: uid });
-  const collaboratorData = api.user.getUserById({ userId: params.id });
-
-  const [user, collaborator] = await Promise.all([userData, collaboratorData]);
-
-  const collaboratorBusiness = await api.business.getBusinessById({
-    businessId: collaborator.business?.businessId,
+  const collaboratorData = await api.user.getUserById({ userId: params.id });
+  const businessData = api.business.getBusinessByAdminId({
+    adminId: uid,
   });
+
+  const [collaborator, business] = await Promise.all([
+    collaboratorData,
+    businessData,
+  ]);
 
   return (
     <div className="grid">
@@ -49,9 +50,8 @@ export default async function EditCollaboratorPage({
       </div>
 
       <EditCollaboratorForm
-        businessLabels={collaboratorBusiness?.labels}
+        businessLabels={business?.labels}
         collaborator={collaborator}
-        userId={user.id}
       />
     </div>
   );

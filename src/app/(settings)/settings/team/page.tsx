@@ -15,9 +15,8 @@ export default async function TeamSettingsPage() {
   }
   const { uid } = await adminAuth.verifyIdToken(token);
 
-  const user = await api.user.getUserById({ userId: uid });
-  const business = await api.business.getBusinessById({
-    businessId: user.business?.businessId,
+  const business = await api.business.getBusinessByAdminId({
+    adminId: uid,
   });
 
   return (
@@ -30,7 +29,9 @@ export default async function TeamSettingsPage() {
             Invitar a un nuevo colaborador al equipo
           </LinkButton>
 
-          <LinkButton href={`/register?businessId=${business.id}`}>
+          <LinkButton
+            href={`/register?businessId=${business.id}&businessAdminId=${business.admin.userId}`}
+          >
             Crear cuenta a colaborador
           </LinkButton>
         </div>

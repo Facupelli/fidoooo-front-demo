@@ -9,7 +9,8 @@ import { adminAuth } from "@/lib/firebase-admin-config";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import * as api from "@/server/root";
-import { ChannelName, type User } from "@/types/db";
+import { ChannelName } from "@/types/db";
+import { type DecodedIdToken } from "firebase-admin/auth";
 
 export default async function Home() {
   const token = cookies().get("token")?.value ?? "";
@@ -18,14 +19,26 @@ export default async function Home() {
     redirect("/login");
   }
 
-  let user: User;
+  let decodedToken: DecodedIdToken;
 
   try {
-    const { uid } = await adminAuth.verifyIdToken(token);
-    user = await api.user.getUserById({ userId: uid });
+    decodedToken = await adminAuth.verifyIdToken(token);
   } catch (error) {
     redirect("/login");
   }
+
+  const userData = api.user.getUserById({ userId: decodedToken.uid });
+  const businessData = api.business.getBusinessByAdminId({
+    adminId: decodedToken.uid,
+  });
+
+  const [user, business] = await Promise.all([userData, businessData]);
+
+  const chats = await api.chat.getChatsByChannel({
+    channelId: business.channels?.find(
+      (channel) => channel.name === ChannelName.WHATSAPP,
+    )?.id,
+  });
 
   if (!user.business?.businessId) {
     return (
@@ -42,15 +55,6 @@ export default async function Home() {
       </main>
     );
   }
-
-  const business = await api.business.getBusinessById({
-    businessId: user.business?.businessId,
-  });
-  const chats = await api.chat.getChatsByChannel({
-    channelId: business.channels?.find(
-      (channel) => channel.name === ChannelName.WHATSAPP,
-    )?.id,
-  });
 
   return (
     <main className="bg-primary-foreground text-white">

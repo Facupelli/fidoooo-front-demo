@@ -1,4 +1,4 @@
-import { EditCollaboratorForm } from "@/_components/client/editCollaboratorForm/editCollaboratorForm";
+import { InviteCollaboratorForm } from "@/_components/client/inviteCollaboratorForm copy/InviteCollaboratorForm";
 import { HeadingMedium } from "@/_components/ui/headings/headingMedium";
 import { HeadingSmall } from "@/_components/ui/headings/headingSmall";
 import { adminAuth } from "@/lib/firebase-admin-config";
@@ -15,10 +15,12 @@ export default async function TeamSettingsPage() {
 
   const { uid } = await adminAuth.verifyIdToken(token);
 
-  const user = await api.user.getUserById({ userId: uid });
-  const business = await api.business.getBusinessById({
-    businessId: user.business?.businessId,
+  const userData = api.user.getUserById({ userId: uid });
+  const businessData = api.business.getBusinessByAdminId({
+    adminId: uid,
   });
+
+  const [user, business] = await Promise.all([userData, businessData]);
 
   return (
     <div className="grid">
@@ -40,12 +42,7 @@ export default async function TeamSettingsPage() {
         </HeadingSmall> */}
       </div>
 
-      <EditCollaboratorForm
-        isSendInvitation
-        businessLabels={business?.labels}
-        businessId={business.id}
-        userId={user.id}
-      />
+      <InviteCollaboratorForm business={business} userId={user.id} />
     </div>
   );
 }

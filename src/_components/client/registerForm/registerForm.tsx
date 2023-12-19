@@ -27,6 +27,7 @@ import {
 const RegisterForm = () => {
   const searchParams = useSearchParams();
   const businessId = searchParams.get("businessId");
+  const businessAdminId = searchParams.get("businessAdminId");
 
   const { toast } = useToast();
   const {
@@ -62,8 +63,9 @@ const RegisterForm = () => {
       });
     }
 
-    if (businessId) {
+    if (businessId && businessAdminId) {
       formData.append("businessId", businessId);
+      formData.append("businessAdminId", businessAdminId);
       await createCollaboratorUser(formData);
     } else {
       await registerAsCollaborator(formData);

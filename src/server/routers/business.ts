@@ -30,6 +30,31 @@ export const getBusinessById = async ({
   return business;
 };
 
+export const getBusinessByAdminId = async ({
+  adminId,
+}: {
+  adminId: string | undefined;
+}) => {
+  const token = await getAuthToken();
+
+  const rawResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/by-admin-id/${adminId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ["business-by-admin-id"],
+      },
+    },
+  );
+
+  const response: ApiResponse<Business> = await rawResponse.json();
+  const business = response.data;
+
+  return business;
+};
+
 export const getMessageTemplates = async ({
   templateCategory,
 }: {
@@ -89,16 +114,23 @@ export const sendCollaboratorInvitation = async ({
 
 export const assignUserToBusiness = async ({
   businessId,
+  businessAdminId,
   receiverEmail,
   labels,
 }: {
   businessId: string;
+  businessAdminId: string;
   receiverEmail: string;
   labels: string[];
 }) => {
   const token = await getAuthToken();
 
-  const body = JSON.stringify({ businessId, receiverEmail, labels });
+  const body = JSON.stringify({
+    businessId,
+    businessAdminId,
+    receiverEmail,
+    labels,
+  });
 
   const rawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/assing-user-to-business`,

@@ -37,6 +37,7 @@ export const useChatMessages = ({
       return;
     }
 
+    // TODO: si es la misma conversacion no debo limpiar el array
     setMessages([]);
     const messagesRef = ref(database, `conversations/${conversationId}`);
     const messagesQuery = query(

@@ -5,20 +5,22 @@ import { Controller, useForm } from "react-hook-form";
 import { GoBackButton } from "../../ui/goBackButton/goBackButton";
 import { Button } from "@/_components/ui/button";
 import { LabelCheckbox } from "../../ui/labelCheckbox/labelCheckbox";
-import { EditCollaboratorForm } from "./interfaces";
+import { type EditCollaboratorForm } from "./interfaces";
 import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 import { useToast } from "@/_components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type User, type Label as LabelType } from "@/types/db";
+import { type User, type Business } from "@/types/db";
 import { editCollaboratorSchema } from "./schemas/editCollaborator.schema";
 
-const EditCollaboratorForm = ({
+const InviteCollaboratorForm = ({
   collaborator,
-  businessLabels,
-}: {
+  business,
+} // userId,
+: {
   collaborator?: User;
-  businessLabels: LabelType[] | undefined;
+  business: Business;
+  userId: string;
 }) => {
   const { toast } = useToast();
   const {
@@ -26,6 +28,7 @@ const EditCollaboratorForm = ({
     handleSubmit,
     control,
     formState: { errors },
+    reset,
   } = useForm<EditCollaboratorForm>({
     resolver: zodResolver(editCollaboratorSchema),
     defaultValues: {
@@ -41,37 +44,63 @@ const EditCollaboratorForm = ({
     },
   });
 
-  const editCollaborator = useMutation({ mutationFn: api.user.updateUser });
+  const sendCollaboratorInvitation = useMutation({
+    mutationFn: api.business.sendCollaboratorInvitation,
+  });
+  const assignUserToBusiness = useMutation({
+    mutationFn: api.business.assignUserToBusiness,
+  });
 
-  const handleEditCollaborator = (data: EditCollaboratorForm) => {
-    if (!collaborator) {
+  const handleSendInvitation = (data: EditCollaboratorForm) => {
+    if (!data.business?.labels || !business) {
       return;
     }
 
-    editCollaborator.mutate(
+    assignUserToBusiness.mutate(
       {
-        userId: collaborator.id,
-        user: data.user,
-        business: {
-          labels: data.business?.labels,
-          businessId: collaborator.business?.businessId,
-          channels: collaborator.business?.channels,
-          roles: collaborator.business?.roles,
-        },
+        businessId: business.id,
+        businessAdminId: business.admin.userId,
+        receiverEmail: data.user.email,
+        labels: data.business?.labels,
       },
       {
         onSuccess() {
           toast({
-            title: "Colaborador editado!",
-            description: `El colaborador fue edito correctamente`,
+            title: "Invitacion enviada!",
+            description: `La invitacion se envio correctamente a ${data.user.email}`,
           });
+          reset();
+        },
+        onError(error) {
+          console.log("send invitation error:", error);
         },
       },
     );
+
+    // sendCollaboratorInvitation.mutate(
+    //   {
+    //     senderId: userId,
+    //     receiverEmail: data.user.email,
+    //     labels: data.business?.labels,
+    //   },
+    //   {
+    //     onSuccess() {
+    //       toast({
+    //         title: "Invitacion enviada!",
+    //         description: `La invitacion se envio correctamente a ${data.user.email}`,
+    //       });
+    //       reset();
+    //     },
+    //     onError(error) {
+    //       console.log("send invitation error:", error);
+    //     },
+    //   },
+    // );
   };
 
   const handleSubmitForm = (data: EditCollaboratorForm) => {
-    handleEditCollaborator(data);
+    handleSendInvitation(data);
+    return;
   };
 
   return (
@@ -79,22 +108,6 @@ const EditCollaboratorForm = ({
       <div className="col-span-3 grid grid-cols-3">
         <div className="border-r border-light-gray pr-8">
           <div className="grid gap-4">
-            <TextField
-              label="Nombre"
-              placeholder="nombre"
-              {...register("user.firstName")}
-            />
-            <TextField
-              label="Apellido"
-              placeholder="apellido"
-              {...register("user.lastName")}
-            />
-            <TextField label="cargo" placeholder="cargo" />
-            <TextField
-              label="Teléfono"
-              placeholder="telefono"
-              {...register("user.phoneNumber")}
-            />
             <TextField
               label="Email"
               placeholder="email"
@@ -129,7 +142,7 @@ const EditCollaboratorForm = ({
             <li>Elige el canal</li>
             <li>Asigna las etiquetas de ese canal</li>
             <div className="flex flex-wrap items-center gap-2 pt-2">
-              {businessLabels?.map((label) => (
+              {business.labels?.map((label) => (
                 <Controller
                   key={label.id}
                   name="business.labels"
@@ -159,18 +172,12 @@ const EditCollaboratorForm = ({
 
       <div className="flex items-center justify-between pt-20">
         <GoBackButton variant="outline">Atrás</GoBackButton>
-
-        <div className="flex items-start gap-10">
-          <Button variant="outline" type="button">
-            Eliminar usuario
-          </Button>
-          <Button disabled={editCollaborator.isPending} type="submit">
-            Guardar cambios
-          </Button>
-        </div>
+        <Button disabled={sendCollaboratorInvitation.isPending} type="submit">
+          Enviar invitación
+        </Button>
       </div>
     </form>
   );
 };
 
-export { EditCollaboratorForm };
+export { InviteCollaboratorForm };
