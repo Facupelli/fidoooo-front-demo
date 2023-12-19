@@ -88,6 +88,7 @@ export const sendTemplateMessage = async ({
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
+        // TODO: add channelId to parameters
         "channel-id": "108632911866758",
       },
     },

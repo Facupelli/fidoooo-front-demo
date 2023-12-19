@@ -61,6 +61,10 @@ export const getChatSession = async ({
 }) => {
   const token = await getAuthToken();
 
+  if (!conversationId) {
+    return null;
+  }
+
   const sessionRawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/conversation/session/${conversationId}`,
     {
