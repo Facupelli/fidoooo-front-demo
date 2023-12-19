@@ -11,8 +11,8 @@ const roboto = Roboto({
 
 export const metadata = {
   title: "Fidooo Bot",
-  description: "AI bot",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  description: "Created by Fidooo Engineering",
+  icons: [{ rel: "icon", url: "/fidooo-logo.svg" }],
 };
 
 export default function RootLayout({
