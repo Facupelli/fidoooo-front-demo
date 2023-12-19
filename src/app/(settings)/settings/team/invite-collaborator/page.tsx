@@ -1,4 +1,4 @@
-import { InviteCollaboratorForm } from "@/_components/client/inviteCollaboratorForm copy/InviteCollaboratorForm";
+import { InviteCollaboratorForm } from "@/_components/client/inviteCollaboratorForm/InviteCollaboratorForm";
 import { HeadingMedium } from "@/_components/ui/headings/headingMedium";
 import { HeadingSmall } from "@/_components/ui/headings/headingSmall";
 import { adminAuth } from "@/lib/firebase-admin-config";
