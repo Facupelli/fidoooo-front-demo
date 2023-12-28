@@ -29,9 +29,7 @@ export default function SettingsLayout({
           <SettingsTabs />
         </nav>
 
-        <div className="flex min-h-[calc(100vh-60px)] flex-col justify-center px-28">
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );

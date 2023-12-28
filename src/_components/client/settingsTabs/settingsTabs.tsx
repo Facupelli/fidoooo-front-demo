@@ -1,11 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const settingsTabs = [
   {
     name: "Perfil de empresa",
-    path: "/settings/business",
+    path: "/settings/business-profile",
   },
   {
     name: "Equipo",
@@ -35,7 +36,7 @@ const SettingsTabs = () => {
               : "border-none text-mid-gray"
           }`}
         >
-          {tab.name}
+          <Link href={tab.path}>{tab.name}</Link>
         </li>
       ))}
     </ul>

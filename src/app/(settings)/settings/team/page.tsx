@@ -20,33 +20,35 @@ export default async function TeamSettingsPage() {
   });
 
   return (
-    <section className="grid gap-6">
-      <EmployeesTable business={business} />
+    <div className="flex min-h-[calc(100vh-60px)] flex-col justify-center px-28">
+      <section className="grid gap-6">
+        <EmployeesTable business={business} />
 
-      <div className="flex items-center justify-between">
-        <div className="flex gap-8">
-          <LinkButton href="team/invite-collaborator">
-            Invitar a un nuevo colaborador al equipo
-          </LinkButton>
+        <div className="flex items-center justify-between">
+          <div className="flex gap-8">
+            <LinkButton href="team/invite-collaborator">
+              Invitar a un nuevo colaborador al equipo
+            </LinkButton>
 
-          <LinkButton
-            href={`/register?businessId=${business.id}&businessAdminId=${business.admin.userId}`}
-          >
-            Crear cuenta a colaborador
-          </LinkButton>
+            <LinkButton
+              href={`/register?businessId=${business.id}&businessAdminId=${business.admin.userId}`}
+            >
+              Crear cuenta a colaborador
+            </LinkButton>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {business.employees !== undefined && (
+              <>
+                <Label htmlFor="" className="grow text-base">
+                  Los colaboradores tienen acceso a todos los chats
+                </Label>
+                <Checkbox id="" />
+              </>
+            )}
+          </div>
         </div>
-
-        <div className="flex items-center gap-4">
-          {business.employees !== undefined && (
-            <>
-              <Label htmlFor="" className="grow text-base">
-                Los colaboradores tienen acceso a todos los chats
-              </Label>
-              <Checkbox id="" />
-            </>
-          )}
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
