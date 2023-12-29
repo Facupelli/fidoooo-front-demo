@@ -323,6 +323,7 @@ const ChatTopBar = ({
 
   const handleSetBotIsActive = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!selectedChat || !session) {
+      console.error("No chat selected or no session");
       return;
     }
 
