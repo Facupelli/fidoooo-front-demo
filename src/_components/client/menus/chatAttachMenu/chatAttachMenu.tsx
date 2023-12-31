@@ -33,6 +33,7 @@ const ChatAttachMenu = ({
           onClick={() => {
             setOpen(true);
           }}
+          aria-label="Attach file button"
         >
           <AttachIcon />
         </Button>

@@ -510,6 +510,7 @@ const ChatSendMessage = ({
         className="p-0 hover:bg-transparent"
         disabled={isButtonDisabled()}
         type="button"
+        aria-label="Select emoji button"
       >
         <EmojiIcon />
       </Button>
@@ -532,6 +533,7 @@ const ChatSendMessage = ({
         className="p-0 hover:bg-transparent"
         disabled={isButtonDisabled()}
         type="submit"
+        aria-label="Send message button"
       >
         <SendIcon />
       </Button>
