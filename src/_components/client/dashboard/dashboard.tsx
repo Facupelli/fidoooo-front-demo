@@ -12,6 +12,7 @@ import {
   useMemo,
   type Dispatch,
   type SetStateAction,
+  Suspense,
 } from "react";
 import { useBoundStore } from "@/zustand/store";
 import {
