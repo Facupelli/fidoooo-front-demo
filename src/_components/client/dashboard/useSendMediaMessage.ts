@@ -2,9 +2,8 @@ import { ref, uploadBytes } from "firebase/storage";
 import { useUploadMediaToWhatsapp } from "./useUploadMediaToWhatsapp";
 import { generateUniqueId } from "./utils";
 import { storage } from "@/lib/firebase-config";
-import { useMutation } from "@tanstack/react-query";
-import * as api from "@/server/root";
 import { MessageType } from "@/types/messages";
+import * as api from "@/server/root";
 
 const uploadMediaToStorage = async ({
   path,
@@ -30,9 +29,8 @@ export const useSendMediaMessage = (
   selectedChatId: string | undefined,
   to: string | undefined,
 ) => {
-  const sendMessage = useMutation({
-    mutationFn: api.whatsapp.sendMessage,
-  });
+  const sendMessage = api.whatsapp.sendMessage;
+
   const { handleUploadMedia } = useUploadMediaToWhatsapp();
 
   const handleSendImageMessage = async (image: File) => {
@@ -46,7 +44,7 @@ export const useSendMediaMessage = (
       return;
     }
 
-    sendMessage.mutate({
+    await sendMessage({
       message: {
         type: MessageType.IMAGE,
         image: {
@@ -69,7 +67,7 @@ export const useSendMediaMessage = (
       return;
     }
 
-    sendMessage.mutate({
+    await sendMessage({
       message: {
         type: MessageType.DOCUMENT,
         document: {

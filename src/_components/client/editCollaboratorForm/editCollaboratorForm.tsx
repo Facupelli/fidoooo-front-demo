@@ -6,7 +6,6 @@ import { GoBackButton } from "../../ui/goBackButton/goBackButton";
 import { Button } from "@/_components/ui/button";
 import { LabelCheckbox } from "../../ui/labelCheckbox/labelCheckbox";
 import { EditCollaboratorForm } from "./interfaces";
-import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 import { useToast } from "@/_components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,37 +40,34 @@ const EditCollaboratorForm = ({
     },
   });
 
-  const editCollaborator = useMutation({ mutationFn: api.user.updateUser });
+  const editCollaborator = api.user.updateUser;
 
-  const handleEditCollaborator = (data: EditCollaboratorForm) => {
+  const handleEditCollaborator = async (data: EditCollaboratorForm) => {
     if (!collaborator) {
       return;
     }
 
-    editCollaborator.mutate(
-      {
-        userId: collaborator.id,
-        user: data.user,
-        business: {
-          labels: data.business?.labels,
-          businessId: collaborator.business?.businessId,
-          channels: collaborator.business?.channels,
-          roles: collaborator.business?.roles,
-        },
+    const collaboratorEdited = await editCollaborator({
+      userId: collaborator.id,
+      user: data.user,
+      business: {
+        labels: data.business?.labels,
+        businessId: collaborator.business?.businessId,
+        channels: collaborator.business?.channels,
+        roles: collaborator.business?.roles,
       },
-      {
-        onSuccess() {
-          toast({
-            title: "Colaborador editado!",
-            description: `El colaborador fue edito correctamente`,
-          });
-        },
-      },
-    );
+    });
+
+    if (collaboratorEdited.success) {
+      toast({
+        title: "Colaborador editado!",
+        description: `El colaborador fue editado correctamente`,
+      });
+    }
   };
 
-  const handleSubmitForm = (data: EditCollaboratorForm) => {
-    handleEditCollaborator(data);
+  const handleSubmitForm = async (data: EditCollaboratorForm) => {
+    await handleEditCollaborator(data);
   };
 
   return (
@@ -164,9 +160,7 @@ const EditCollaboratorForm = ({
           <Button variant="outline" type="button">
             Eliminar usuario
           </Button>
-          <Button disabled={editCollaborator.isPending} type="submit">
-            Guardar cambios
-          </Button>
+          <Button type="submit">Guardar cambios</Button>
         </div>
       </div>
     </form>

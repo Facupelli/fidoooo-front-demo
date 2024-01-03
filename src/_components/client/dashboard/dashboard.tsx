@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { Virtuoso, type VirtuosoHandle } from "react-virtuoso";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   useRef,
   type ChangeEvent,
@@ -250,6 +250,7 @@ const RightBar = ({ business }: { business: Business }) => {
     conversationId: selectedChat?.id,
     limit: 15,
   });
+
   const { data: session } = useQuery({
     queryKey: ["get-chat-session", selectedChat?.id],
     queryFn: () =>
@@ -464,9 +465,8 @@ const ChatSendMessage = ({
       shouldUnregister: false,
     });
 
-  const sendMessage = useMutation({
-    mutationFn: api.whatsapp.sendMessage,
-  });
+  const sendMessage = api.whatsapp.sendMessage;
+
   const { handleSendDocumentMessage, handleSendImageMessage } =
     useSendMediaMessage(selectedChat?.id, selectedChat?.to);
 
@@ -480,14 +480,14 @@ const ChatSendMessage = ({
     } else if (data.document) {
       await handleSendDocumentMessage(data.document);
     } else {
-      sendMessage.mutate({
+      const sendMessageResponse = await sendMessage({
         message: { type: MessageType.TEXT, text: { body: data.text } },
         to: selectedChat.to,
       });
-    }
 
-    if (!sendMessage.error) {
-      reset();
+      if (sendMessageResponse.success) {
+        reset();
+      }
     }
   };
 

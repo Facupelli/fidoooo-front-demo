@@ -1,25 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 
 export const useUploadMediaToWhatsapp = () => {
-  const uploadMedia = useMutation({
-    mutationFn: api.whatsapp.uploadMedia,
-  });
+  const uploadMedia = api.whatsapp.uploadMedia;
 
   const handleUploadMedia = async ({ file }: { file: File }) => {
     let id = "";
 
-    await uploadMedia.mutateAsync(
-      { file },
-      {
-        onSuccess(result) {
-          id = result?.data[0]?.id ?? "";
-        },
-        onError(error) {
-          console.log("uploadMediaToWhatsapp error:", error);
-        },
-      },
-    );
+    const uploadedMedia = await uploadMedia({ file });
+
+    if (uploadedMedia?.success) {
+      id = uploadedMedia?.data[0]?.id ?? "";
+    } else {
+      console.log("uploadMediaToWhatsapp error:", uploadedMedia?.message);
+    }
 
     return id;
   };

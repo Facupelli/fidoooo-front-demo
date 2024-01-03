@@ -7,6 +7,7 @@ import {
   type Session,
 } from "@/types/db";
 import { getAuthToken } from "../utils";
+import { revalidateTag } from "next/cache";
 
 export const getChatsByChannel = async ({
   channelId,
@@ -68,9 +69,11 @@ export const getChatSession = async ({
   const sessionRawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/conversation/session/${conversationId}`,
     {
-      // cache: "no-store
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ["get-chat-session"],
       },
     },
   );
@@ -163,6 +166,7 @@ export const setBotIsActive = async ({
   );
 
   const chatResponse: ApiResponse<unknown> = await chatRawResponse.json();
+  revalidateTag("get-chat-session");
 
   return chatResponse;
 };
