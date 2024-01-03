@@ -6,7 +6,6 @@ import { GoBackButton } from "../../ui/goBackButton/goBackButton";
 import { Button } from "@/_components/ui/button";
 import { LabelCheckbox } from "../../ui/labelCheckbox/labelCheckbox";
 import { type EditCollaboratorForm } from "./interfaces";
-import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 import { useToast } from "@/_components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,9 +14,8 @@ import { editCollaboratorSchema } from "./schemas/editCollaborator.schema";
 
 const InviteCollaboratorForm = ({
   collaborator,
-  business,
-} // userId,
-: {
+  business, // userId,
+}: {
   collaborator?: User;
   business: Business;
   userId: string;
@@ -44,38 +42,31 @@ const InviteCollaboratorForm = ({
     },
   });
 
-  const sendCollaboratorInvitation = useMutation({
-    mutationFn: api.business.sendCollaboratorInvitation,
-  });
-  const assignUserToBusiness = useMutation({
-    mutationFn: api.business.assignUserToBusiness,
-  });
+  // const sendCollaboratorInvitation = api.business.sendCollaboratorInvitation;
 
-  const handleSendInvitation = (data: EditCollaboratorForm) => {
+  const assignUserToBusiness = api.business.assignUserToBusiness;
+
+  const handleSendInvitation = async (data: EditCollaboratorForm) => {
     if (!data.business?.labels || !business) {
       return;
     }
 
-    assignUserToBusiness.mutate(
-      {
-        businessId: business.id,
-        businessAdminId: business.admin.userId,
-        receiverEmail: data.user.email,
-        labels: data.business?.labels,
-      },
-      {
-        onSuccess() {
-          toast({
-            title: "Invitacion enviada!",
-            description: `La invitacion se envio correctamente a ${data.user.email}`,
-          });
-          reset();
-        },
-        onError(error) {
-          console.log("send invitation error:", error);
-        },
-      },
-    );
+    const userAssigned = await assignUserToBusiness({
+      businessId: business.id,
+      businessAdminId: business.admin.userId,
+      receiverEmail: data.user.email,
+      labels: data.business?.labels,
+    });
+
+    if (userAssigned.success) {
+      toast({
+        title: "Invitacion enviada!",
+        description: `La invitacion se envio correctamente a ${data.user.email}`,
+      });
+      reset();
+    } else {
+      console.log("send invitation error:", userAssigned.message);
+    }
 
     // sendCollaboratorInvitation.mutate(
     //   {
@@ -98,8 +89,8 @@ const InviteCollaboratorForm = ({
     // );
   };
 
-  const handleSubmitForm = (data: EditCollaboratorForm) => {
-    handleSendInvitation(data);
+  const handleSubmitForm = async (data: EditCollaboratorForm) => {
+    await handleSendInvitation(data);
     return;
   };
 
@@ -172,9 +163,7 @@ const InviteCollaboratorForm = ({
 
       <div className="flex items-center justify-between pt-20">
         <GoBackButton variant="outline">Atrás</GoBackButton>
-        <Button disabled={sendCollaboratorInvitation.isPending} type="submit">
-          Enviar invitación
-        </Button>
+        <Button type="submit">Enviar invitación</Button>
       </div>
     </form>
   );

@@ -1,5 +1,8 @@
+"use server";
+
 import { type User, type ApiResponse } from "@/types/db";
 import { getAuthToken } from "../utils";
+import { revalidateTag } from "next/cache";
 
 export const getUserById = async ({ userId }: { userId: string }) => {
   const token = await getAuthToken();
@@ -9,6 +12,9 @@ export const getUserById = async ({ userId }: { userId: string }) => {
     {
       headers: {
         Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ["user-by-id"],
       },
     },
   );
@@ -54,7 +60,9 @@ export const updateUser = async ({
     },
   );
   const userResponse: ApiResponse<User> = await userRawResponse.json();
-  const updatedUser = userResponse.data;
 
-  return updatedUser;
+  revalidateTag("business-by-admin-id");
+  revalidateTag("user-by-id");
+
+  return userResponse;
 };

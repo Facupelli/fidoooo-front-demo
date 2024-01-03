@@ -30,7 +30,6 @@ import {
   ComponentType,
   type WhatsAppMessageTemplate,
 } from "@/types/whatsapp";
-import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 import { type NewChatForm } from "./interfaces";
 import { generateVariablesToFill, transformTemplate } from "./utils";
@@ -74,9 +73,7 @@ const InitNewChatForm = ({
     (template) => template.id === selectedTemplateId,
   );
 
-  const sendWhatsappMessage = useMutation({
-    mutationFn: api.whatsapp.sendTemplateMessage,
-  });
+  const sendWhatsappTemplateMessage = api.whatsapp.sendTemplateMessage;
 
   const [step, setStep] = useState(1);
   const totalSteps = 2;
@@ -96,23 +93,20 @@ const InitNewChatForm = ({
     setStep((prevStep) => prevStep + 1);
   };
 
-  const handleInitNewChat = (data: NewChatForm) => {
+  const handleInitNewChat = async (data: NewChatForm) => {
     if (!selectedTemplate) {
       return;
     }
 
-    sendWhatsappMessage.mutate(
-      {
-        to: data.to,
-        template: transformTemplate(selectedTemplate, data.variables),
-      },
-      {
-        onSuccess: () => {
-          reset();
-          setOpen(false);
-        },
-      },
-    );
+    const whatsappMessage = await sendWhatsappTemplateMessage({
+      to: data.to,
+      template: transformTemplate(selectedTemplate, data.variables),
+    });
+
+    if (whatsappMessage.success) {
+      reset();
+      setOpen(false);
+    }
   };
 
   return (

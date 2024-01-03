@@ -32,7 +32,6 @@ import {
 import { Input } from "@/_components/ui/input";
 import { Label } from "@/_components/ui/label";
 import { useInvalidateSelectedChat } from "@/hooks/useInvalidateSelectedChat";
-import { useMutation } from "@tanstack/react-query";
 import * as api from "@/server/root";
 import {
   type AssignLabelToChatForm,
@@ -57,16 +56,14 @@ const ChatOptionsMenu = ({
   const [openAssignLabelDialog, setOpenAssignLabelDialog] = useState(false);
   const [openResetAlertDialog, setOpenResetAlertDialog] = useState(false);
 
-  const sendBotFirstNode = useMutation({
-    mutationFn: api.chat.sendBotFirstNode,
-  });
+  const sendBotFirstNode = api.chat.sendBotFirstNode;
 
-  const handleSendBotFirstNode = () => {
+  const handleSendBotFirstNode = async () => {
     if (!session) {
       return;
     }
 
-    sendBotFirstNode.mutate({
+    await sendBotFirstNode({
       chatId: chat.id,
       to: chat.to,
       sessionId: session.id,
@@ -148,25 +145,20 @@ const AssignChat = ({
 }) => {
   const { register, handleSubmit } = useForm<AssignUserToChatForm>();
 
-  const assignChatToUser = useMutation({
-    mutationFn: api.chat.assignUserToChat,
-  });
+  const assignChatToUser = api.chat.assignUserToChat;
 
   const { invalidateChat } = useInvalidateSelectedChat(chatId);
 
-  const handleAssignUserToChat = (data: AssignUserToChatForm) => {
-    assignChatToUser.mutate(
-      {
-        conversationId: chatId,
-        userId: data.userId,
-      },
-      {
-        async onSuccess() {
-          await invalidateChat();
-          setOpen(false);
-        },
-      },
-    );
+  const handleAssignUserToChat = async (data: AssignUserToChatForm) => {
+    const chatAssigned = await assignChatToUser({
+      conversationId: chatId,
+      userId: data.userId,
+    });
+
+    if (chatAssigned.success) {
+      await invalidateChat();
+      setOpen(false);
+    }
   };
 
   return (
@@ -239,31 +231,27 @@ const AssignLabel = ({
 }) => {
   const { control, handleSubmit } = useForm<AssignLabelToChatForm>();
 
-  const updateChatLabel = useMutation({
-    mutationFn: api.chat.updateChatLabel,
-  });
+  const updateChatLabel = api.chat.updateChatLabel;
+
   const { invalidateChat } = useInvalidateSelectedChat(chatId);
 
-  const handleAssignLabelToChat = (data: AssignLabelToChatForm) => {
+  const handleAssignLabelToChat = async (data: AssignLabelToChatForm) => {
     const selectedLabel = labels?.find((label) => label.id === data.labelId);
 
     if (!selectedLabel) {
       return;
     }
 
-    updateChatLabel.mutate(
-      {
-        labelId: data.labelId,
-        conversationId: chatId,
-        color: selectedLabel.color,
-      },
-      {
-        async onSuccess() {
-          await invalidateChat();
-          setOpen(false);
-        },
-      },
-    );
+    const updatedChat = await updateChatLabel({
+      labelId: data.labelId,
+      conversationId: chatId,
+      color: selectedLabel.color,
+    });
+
+    if (updatedChat.success) {
+      await invalidateChat();
+      setOpen(false);
+    }
   };
 
   return (
