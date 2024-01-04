@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageStatusType } from "@/types/messages";
+import { type Message, MessageStatusType } from "@/types/messages";
 import { MessageBody } from "./messageBody";
 import React from "react";
 import { type Business } from "@/types/db";
@@ -16,10 +16,11 @@ import {
 interface MessageProps extends React.InputHTMLAttributes<HTMLDivElement> {
   message: ChatMessage;
   business: Business;
+  messages: Message[] | undefined;
 }
 
 const MessageComponent = React.forwardRef<HTMLDivElement, MessageProps>(
-  ({ message, business, ...props }, ref) => {
+  ({ message, business, messages, ...props }, ref) => {
     const image = getUserImage(business, message);
 
     if (isMessageFromBusiness(business, message)) {
@@ -48,6 +49,7 @@ const MessageComponent = React.forwardRef<HTMLDivElement, MessageProps>(
             {...props}
           >
             <MessageBody message={message} />
+
             <div className="flex items-baseline justify-end gap-1.5 text-sm text-dark-gray">
               {timestampToHoursString(message.timestamp)}
               <MessageTickIcon
@@ -71,7 +73,8 @@ const MessageComponent = React.forwardRef<HTMLDivElement, MessageProps>(
           ref={ref}
           {...props}
         >
-          <MessageBody message={message} />
+          <MessageBody message={message} messages={messages} />
+
           <div className="flex items-baseline justify-end gap-1.5 text-sm text-dark-gray">
             {timestampToHoursString(message.timestamp)}
           </div>

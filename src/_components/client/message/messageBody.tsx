@@ -12,6 +12,7 @@ import {
   ComponentFormat,
   ButtonToSendSubType,
   ComponentType,
+  type WhatsAppInteractiveFlow,
 } from "@/types/whatsapp";
 
 const formatText = (text: string) => {
@@ -26,7 +27,13 @@ const FormattedText = ({ text }: { text: string }) => {
 };
 
 /* eslint-disable */
-const MessageBody = ({ message }: { message: any }) => {
+const MessageBody = ({
+  message,
+  messages,
+}: {
+  message: any;
+  messages?: any;
+}) => {
   switch (message.type) {
     case MessageType.TEXT:
       return <FormattedText text={message.text.body} />;
@@ -73,6 +80,47 @@ const MessageBody = ({ message }: { message: any }) => {
           </div>
         );
       }
+
+      if (message.interactive.type === InteractiveMessageType.FLOW) {
+        const flowMessage = message.interactive;
+
+        return <FlowMessageBody flowMessage={flowMessage} />;
+      }
+
+      if (message.interactive.type === InteractiveMessageType.NFM_REPLY) {
+        const flowMessage = message.interactive;
+
+        if (message.context) {
+          const messageQuoted = messages?.find(
+            (singleMessage: any) =>
+              singleMessage.messageId === message.context.id,
+          );
+
+          if (messageQuoted) {
+            return (
+              <div className="grid gap-1">
+                <div className="rounded bg-[#bddcbe] px-2 py-1">
+                  <FlowMessageBody flowMessage={messageQuoted.interactive} />
+                </div>
+                <p>{flowMessage.nfm_reply.body}</p>
+                {/* <p>{flowMessage.nfm_reply.response_json}</p> */}
+              </div>
+            );
+          }
+        }
+
+        return (
+          <div className="grid gap-1">
+            <p>
+              FLOW {flowMessage.nfm_reply.body} ${message.context.id}
+            </p>
+            <p className="max-w-[500px]">
+              {flowMessage.nfm_reply.response_json}
+            </p>
+          </div>
+        );
+      }
+
       return <p>interactive message not supported</p>;
 
     case MessageType.DOCUMENT: {
@@ -134,6 +182,20 @@ const ImageMessageBody = ({ imagePath }: { imagePath: string | undefined }) => {
         fill
         className="rounded-lg object-cover"
       />
+    </div>
+  );
+};
+
+const FlowMessageBody = ({
+  flowMessage,
+}: {
+  flowMessage: WhatsAppInteractiveFlow;
+}) => {
+  return (
+    <div className="grid gap-1">
+      <p>{flowMessage.header.text}</p>
+      <p>{flowMessage.body.text}</p>
+      <p>{flowMessage.footer.text}</p>
     </div>
   );
 };

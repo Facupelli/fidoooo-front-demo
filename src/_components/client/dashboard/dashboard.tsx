@@ -424,11 +424,15 @@ const MessageList = ({
     (index: number, rowData: Message) => {
       return (
         <div className="px-4 py-1">
-          <MessageComponent message={rowData} business={business} />
+          <MessageComponent
+            message={rowData}
+            business={business}
+            messages={internalMessages}
+          />
         </div>
       );
     },
-    [business],
+    [business, internalMessages],
   );
 
   const followOutput = useCallback((isAtBottom: boolean) => {

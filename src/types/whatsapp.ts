@@ -7,6 +7,18 @@ export interface WhatsAppMessageTemplate {
   id: string;
 }
 
+export interface WhatsAppInteractiveFlow {
+  body: {
+    text: string;
+  };
+  header: {
+    text?: string;
+  };
+  footer: {
+    text: string;
+  };
+}
+
 export enum ComponentFormat {
   IMAGE = "IMAGE",
   VIDEO = "VIDEO",

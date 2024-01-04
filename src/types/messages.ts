@@ -93,6 +93,8 @@ export enum InteractiveMessageType {
   LIST = "list",
   BUTTON_REPLY = "button_reply",
   LIST_REPLY = "list_reply",
+  FLOW = "flow",
+  NFM_REPLY = "nfm_reply",
 }
 
 interface ButtonAction {
