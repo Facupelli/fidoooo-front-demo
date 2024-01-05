@@ -14,6 +14,7 @@ import {
   ComponentType,
   type WhatsAppInteractiveFlow,
 } from "@/types/whatsapp";
+import { cn } from "@/lib/utils";
 
 const formatText = (text: string) => {
   return text
@@ -84,7 +85,15 @@ const MessageBody = ({
       if (message.interactive.type === InteractiveMessageType.FLOW) {
         const flowMessage = message.interactive;
 
-        return <FlowMessageBody flowMessage={flowMessage} />;
+        return (
+          <div>
+            <FlowMessageBody flowMessage={flowMessage} />
+            <div className="mt-3   h-[1px] w-full bg-neutral-400" />
+            <button className="w-full cursor-default pt-3 text-center font-semibold text-blue-400">
+              abrir flujo
+            </button>
+          </div>
+        );
       }
 
       if (message.interactive.type === InteractiveMessageType.NFM_REPLY) {
@@ -188,11 +197,13 @@ const ImageMessageBody = ({ imagePath }: { imagePath: string | undefined }) => {
 
 const FlowMessageBody = ({
   flowMessage,
+  className,
 }: {
   flowMessage: WhatsAppInteractiveFlow;
+  className?: string;
 }) => {
   return (
-    <div className="grid gap-1">
+    <div className={cn("grid gap-1", className)}>
       <p>{flowMessage.header.text}</p>
       <p>{flowMessage.body.text}</p>
       <p>{flowMessage.footer.text}</p>
