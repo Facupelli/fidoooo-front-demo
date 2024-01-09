@@ -18,7 +18,7 @@ export const getChatsByChannel = async ({
   const chatRawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/conversation?channelId=${channelId}`,
     {
-      // cache: "no-store",
+      cache: "force-cache",
       headers: {
         Authorization: `Bearer ${token}`,
       },

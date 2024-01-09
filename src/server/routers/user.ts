@@ -10,6 +10,7 @@ export const getUserById = async ({ userId }: { userId: string }) => {
   const userRawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/${userId}`,
     {
+      cache: "force-cache",
       headers: {
         Authorization: `Bearer ${token}`,
       },
