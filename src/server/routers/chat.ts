@@ -7,7 +7,6 @@ import {
   type Session,
 } from "@/types/db";
 import { getAuthToken } from "../utils";
-import { revalidateTag } from "next/cache";
 
 export const getChatsByChannel = async ({
   channelId,

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as firestore from "firebase/firestore";
 import { type FirestoreTimestamp, type Chat } from "@/types/db";
-import { Message, MessageFromType, MessageType } from "@/types/messages";
+import { type Message, MessageFromType, MessageType } from "@/types/messages";
 import { push, ref } from "firebase/database";
 import { database } from "@/lib/firebase-config";
 import { type ChatFilters } from "./interfaces";

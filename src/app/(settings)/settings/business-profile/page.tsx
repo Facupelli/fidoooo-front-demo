@@ -6,17 +6,12 @@ import { HeadingMedium } from "@/_components/ui/headings/headingMedium";
 import Script from "next/script";
 import { ConnectWithFacebookButton } from "@/_components/client/connectWithFacebookButton/connectWithFacebookButton";
 
-export default async function BusinessProfileSettingsPage() {
+export default function BusinessProfileSettingsPage() {
   const token = cookies().get("token")?.value ?? "";
 
   if (!token) {
     redirect("/login");
   }
-  const { uid } = await adminAuth.verifyIdToken(token);
-
-  const business = await api.business.getBusinessByAdminId({
-    adminId: uid,
-  });
 
   return (
     <>

@@ -24,11 +24,10 @@ import { Dialog, DialogContent, DialogFooter } from "@/_components/ui/dialog";
 import { OptionsIcon } from "@/icons";
 import {
   type ChatCurrentUser,
-  type BusinessEmployee,
   type Label as LabelType,
   type Chat,
   type Session,
-  User,
+  type User,
 } from "@/types/db";
 import { Input } from "@/_components/ui/input";
 import { Label } from "@/_components/ui/label";

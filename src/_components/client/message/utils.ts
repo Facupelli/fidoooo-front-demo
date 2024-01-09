@@ -37,7 +37,7 @@ export const getUserImage = (business: Business, message: ChatMessage) => {
   return image;
 };
 
-export const timestampToHoursString = (timestamp: string) => {
+export const timestampToHoursString = (timestamp: number) => {
   const date = new Date(Number(timestamp));
 
   return dayjs(date).format("HH:mm");
