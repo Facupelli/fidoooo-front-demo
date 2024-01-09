@@ -15,18 +15,19 @@ import {
 import { Label } from "@/_components/ui/label";
 import { LabelCheckbox } from "@/_components/ui/labelCheckbox/labelCheckbox";
 import {
-  type BusinessEmployee,
-  type Business,
   type Label as LabelType,
   ConversationStatus,
+  type User,
 } from "@/types/db";
 import { type Control, Controller } from "react-hook-form";
 
 const FilterChatMenu = ({
-  business,
+  employees,
   control,
+  labels,
 }: {
-  business: Business;
+  employees: User[] | undefined;
+  labels: LabelType[] | undefined;
   control: Control<ChatFilters>;
 }) => {
   return (
@@ -45,10 +46,7 @@ const FilterChatMenu = ({
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
-                  <ByEmployeeMenu
-                    employees={business.employees}
-                    control={control}
-                  />
+                  <ByEmployeeMenu employees={employees} control={control} />
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -59,7 +57,7 @@ const FilterChatMenu = ({
               </DropdownMenuSubTrigger>
               <DropdownMenuPortal>
                 <DropdownMenuSubContent>
-                  <ByLabel labels={business.labels} control={control} />
+                  <ByLabel labels={labels} control={control} />
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
@@ -85,7 +83,7 @@ const ByEmployeeMenu = ({
   employees,
   control,
 }: {
-  employees: BusinessEmployee[] | undefined;
+  employees: User[] | undefined;
   control: Control<ChatFilters>;
 }) => {
   return (
@@ -93,7 +91,7 @@ const ByEmployeeMenu = ({
       {employees !== undefined && employees.length > 0 ? (
         employees?.map((employee) => (
           <DropdownMenuItem
-            key={employee.userId}
+            key={employee.id}
             className="flex items-center gap-2 leading-5 text-primary-purple focus:text-primary-purple"
             onSelect={(e) => e.preventDefault()}
           >
@@ -102,22 +100,20 @@ const ByEmployeeMenu = ({
               name="employees"
               render={({ field }) => (
                 <Checkbox
-                  id={employee.userId}
-                  checked={field.value?.includes(employee.userId)}
+                  id={employee.id}
+                  checked={field.value?.includes(employee.id)}
                   onCheckedChange={(checked) => {
                     return checked
-                      ? field.onChange([...field.value, employee.userId])
+                      ? field.onChange([...field.value, employee.id])
                       : field.onChange(
-                          field.value?.filter(
-                            (value) => value !== employee.userId,
-                          ),
+                          field.value?.filter((value) => value !== employee.id),
                         );
                   }}
                 />
               )}
             />
-            <Label htmlFor={employee.userId} className="text-base">
-              {employee.userName}
+            <Label htmlFor={employee.id} className="text-base">
+              {employee.firstName} {employee.lastName}
             </Label>
           </DropdownMenuItem>
         ))

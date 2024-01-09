@@ -18,11 +18,14 @@ export default async function TeamSettingsPage() {
   const business = await api.business.getBusinessByAdminId({
     adminId: uid,
   });
+  const collaborators = await api.user.getCollaborators({
+    businessId: business.id,
+  });
 
   return (
     <div className="flex min-h-[calc(100vh-60px)] flex-col justify-center px-28">
       <section className="grid gap-6">
-        <EmployeesTable business={business} />
+        <EmployeesTable serverCollabs={collaborators} />
 
         <div className="flex items-center justify-between">
           <div className="flex gap-8">
@@ -38,7 +41,7 @@ export default async function TeamSettingsPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            {business.employees !== undefined && (
+            {collaborators !== undefined && (
               <>
                 <Label htmlFor="" className="grow text-base">
                   Los colaboradores tienen acceso a todos los chats

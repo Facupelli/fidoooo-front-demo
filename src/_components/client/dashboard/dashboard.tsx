@@ -21,6 +21,7 @@ import {
   type Session,
   type Business,
   type BusinessChannel,
+  type User,
 } from "@/types/db";
 import { MessageType, type Message } from "@/types/messages";
 import { ChatTitle } from "../chat/chatTitle";
@@ -50,9 +51,11 @@ import {
   firestoreTimestampToDateString,
   formatChatPhoneNumber,
   generateTextFromLastMessage,
+  has24HoursPassedSinceLastCustomerMessage,
   hasAnyFilterActive,
 } from "./utils";
 import { type SendTextMessageForm, type ChatFilters } from "./interfaces";
+import { SendWaMessageDialog } from "../sendWaMessageDialog/sendWaMessageDialog";
 
 const START_INDEX = 500;
 
@@ -60,10 +63,12 @@ const Dashboard = ({
   serverBusiness,
   chats,
   userPicture,
+  collaborators,
 }: {
   serverBusiness: Business;
   chats: Chat[];
   userPicture: string;
+  collaborators: User[];
 }) => {
   const [selectedChannel, setSelectedChannel] =
     useState<BusinessChannel | null>(serverBusiness?.channels?.[0] ?? null);
@@ -81,11 +86,12 @@ const Dashboard = ({
           userPicture={userPicture}
           selectedChannel={selectedChannel}
           setSelectedChannel={setSelectedChannel}
+          collaborators={collaborators}
         />
       </section>
 
       <section className="relative col-span-8 bg-pale-gray">
-        <RightBar business={serverBusiness} />
+        <RightBar business={serverBusiness} collaborators={collaborators} />
       </section>
     </div>
   );
@@ -97,12 +103,14 @@ const LeftBar = ({
   serverChats,
   selectedChannel,
   setSelectedChannel,
+  collaborators,
 }: {
   userPicture: string;
   business: Business;
   serverChats: Chat[];
   selectedChannel: BusinessChannel | null;
   setSelectedChannel: Dispatch<SetStateAction<BusinessChannel | null>>;
+  collaborators: User[] | undefined;
 }) => {
   const { register, watch, control } = useForm<ChatFilters>({
     defaultValues: {
@@ -139,11 +147,17 @@ const LeftBar = ({
           selectedChannel={selectedChannel}
         />
 
-        <FilterChatMenu business={business} control={control} />
+        <FilterChatMenu
+          employees={collaborators}
+          control={control}
+          labels={business.labels}
+        />
       </div>
 
       <div className="px-5">
-        <ChatList chats={filteredChats} filters={filters} />
+        <Suspense fallback={<div>CARGANDO...</div>}>
+          <ChatList chats={filteredChats} filters={filters} />
+        </Suspense>
       </div>
     </>
   );
@@ -244,7 +258,13 @@ const ChatList = ({
   );
 };
 
-const RightBar = ({ business }: { business: Business }) => {
+const RightBar = ({
+  business,
+  collaborators,
+}: {
+  business: Business;
+  collaborators: User[];
+}) => {
   const selectedChat = useBoundStore((state) => state.selectedChat);
 
   const { messages, fetchPreviousPage } = useChatMessages({
@@ -274,12 +294,15 @@ const RightBar = ({ business }: { business: Business }) => {
     }
   });
 
+  const has24HoursPassed = has24HoursPassedSinceLastCustomerMessage(messages);
+
   return (
     <>
       <ChatTopBar
         selectedChat={selectedChat}
         session={session}
         business={business}
+        collaborators={collaborators}
       />
 
       {prevChatId !== selectedChat?.id ? null : (
@@ -291,7 +314,11 @@ const RightBar = ({ business }: { business: Business }) => {
         />
       )}
 
-      <ChatSendMessage session={session} selectedChat={selectedChat} />
+      <ChatSendMessage
+        session={session}
+        selectedChat={selectedChat}
+        has24HoursPassed={has24HoursPassed}
+      />
     </>
   );
 };
@@ -300,10 +327,12 @@ const ChatTopBar = ({
   selectedChat,
   session,
   business,
+  collaborators,
 }: {
   selectedChat: Chat | null;
   session: Session | null | undefined;
   business: Business;
+  collaborators: User[];
 }) => {
   const queryClient = useQueryClient();
   const { invalidateChat } = useInvalidateSelectedChat(selectedChat?.id);
@@ -387,7 +416,7 @@ const ChatTopBar = ({
             </div>
             <ChatOptionsMenu
               labels={business.labels}
-              employees={business.employees}
+              employees={collaborators}
               chat={selectedChat}
               chatCurrentUser={selectedChat.currentUser}
               session={session}
@@ -460,11 +489,15 @@ const MessageList = ({
 const ChatSendMessage = ({
   selectedChat,
   session,
+  has24HoursPassed,
 }: {
   session: Session | null | undefined;
   selectedChat: Chat | null;
+  has24HoursPassed: boolean;
 }) => {
   const [openMenu, setOpenMenu] = useState(false);
+  const [openSendMessageErrorDialog, setOpenSendMessageErrorDialog] =
+    useState(false);
   const { register, handleSubmit, control, reset } =
     useForm<SendTextMessageForm>({
       shouldUnregister: false,
@@ -477,6 +510,11 @@ const ChatSendMessage = ({
 
   const handleSendWhatsapppTextMessage = async (data: SendTextMessageForm) => {
     if (!selectedChat) {
+      return;
+    }
+
+    if (has24HoursPassed) {
+      setOpenSendMessageErrorDialog(true);
       return;
     }
 
@@ -496,53 +534,68 @@ const ChatSendMessage = ({
     }
   };
 
-  const isButtonDisabled = () => {
+  const cannotSendMessage = (
+    isBotActive: boolean | undefined,
+    selectedChat: Chat | null,
+  ) => {
     return (
       // eslint-disable-next-line
-      session?.isBotActive ||
+      isBotActive ||
       selectedChat?.status === ConversationStatus.COMPLETED ||
       !selectedChat
     );
   };
 
+  const isSendMessageDisabled = cannotSendMessage(
+    session?.isBotActive,
+    selectedChat,
+  );
+
   return (
-    <form
-      onSubmit={handleSubmit(handleSendWhatsapppTextMessage)}
-      className="absolute bottom-0 right-0 z-10 flex h-[80px] w-full items-center gap-4 bg-pale-gray px-8"
-    >
-      <Button
-        variant="ghost"
-        className="p-0 hover:bg-transparent"
-        disabled={isButtonDisabled()}
-        type="button"
-        aria-label="Select emoji button"
-      >
-        <EmojiIcon />
-      </Button>
-
-      <ChatAttachMenu
-        isMenuDisabled={isButtonDisabled()}
-        control={control}
-        open={openMenu}
-        setOpen={setOpenMenu}
+    <>
+      <SendWaMessageDialog
+        open={openSendMessageErrorDialog}
+        setOpen={setOpenSendMessageErrorDialog}
       />
 
-      <Input
-        type="text"
-        placeholder="Escribe tu mensaje aquí"
-        disabled={isButtonDisabled()}
-        {...register("text")}
-      />
-      <Button
-        variant="ghost"
-        className="p-0 hover:bg-transparent"
-        disabled={isButtonDisabled()}
-        type="submit"
-        aria-label="Send message button"
+      <form
+        onSubmit={handleSubmit(handleSendWhatsapppTextMessage)}
+        className="absolute bottom-0 right-0 z-10 flex h-[80px] w-full items-center gap-4 bg-pale-gray px-8"
       >
-        <SendIcon />
-      </Button>
-    </form>
+        <Button
+          variant="ghost"
+          className="p-0 hover:bg-transparent"
+          disabled={isSendMessageDisabled}
+          type="button"
+          aria-label="Select emoji button"
+        >
+          <EmojiIcon />
+        </Button>
+
+        <ChatAttachMenu
+          isMenuDisabled={isSendMessageDisabled}
+          control={control}
+          open={openMenu}
+          setOpen={setOpenMenu}
+        />
+
+        <Input
+          type="text"
+          placeholder="Escribe tu mensaje aquí"
+          disabled={isSendMessageDisabled}
+          {...register("text")}
+        />
+        <Button
+          variant="ghost"
+          className="p-0 hover:bg-transparent"
+          disabled={isSendMessageDisabled}
+          type="submit"
+          aria-label="Send message button"
+        >
+          <SendIcon />
+        </Button>
+      </form>
+    </>
   );
 };
 

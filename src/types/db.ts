@@ -130,7 +130,7 @@ export enum ChannelName {
   WHATSAPP = "whatsapp",
   INSTAGRAM = "instagram",
   FACEBOOK = "facebook",
-  TELEGRAM = "TELEGRAM",
+  TELEGRAM = "telegram",
 }
 
 export interface BusinessEmployee {

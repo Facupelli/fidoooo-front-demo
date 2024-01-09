@@ -40,6 +40,7 @@ export const getBusinessByAdminId = async ({
   const rawResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/business/by-admin-id/${adminId}`,
     {
+      cache: "force-cache",
       headers: {
         Authorization: `Bearer ${token}`,
       },

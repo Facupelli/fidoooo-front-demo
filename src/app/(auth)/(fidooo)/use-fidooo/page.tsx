@@ -37,7 +37,7 @@ export default function UseFidoooPage() {
         <Button
           className="w-full"
           type="button"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/dashboard")}
         >
           Volver al sitio
         </Button>

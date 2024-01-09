@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as firestore from "firebase/firestore";
 import { type FirestoreTimestamp, type Chat } from "@/types/db";
-import { MessageType } from "@/types/messages";
+import { Message, MessageFromType, MessageType } from "@/types/messages";
 import { push, ref } from "firebase/database";
 import { database } from "@/lib/firebase-config";
 import { type ChatFilters } from "./interfaces";
@@ -97,4 +97,21 @@ export const hasAnyFilterActive = (filters: ChatFilters) => {
     }
   }
   return false;
+};
+
+export const has24HoursPassedSinceLastCustomerMessage = (
+  messages: Message[],
+) => {
+  const lastCustomerMessage = messages
+    .filter((message) => message.from.userId === MessageFromType.CUSTOMER)
+    .at(-1);
+
+  if (!lastCustomerMessage) {
+    return false;
+  }
+
+  const lastMessageTimestamp = Number(lastCustomerMessage.timestamp);
+  const currentTimestamp = new Date().getTime();
+
+  return currentTimestamp - lastMessageTimestamp > 24 * 60 * 60 * 1000;
 };

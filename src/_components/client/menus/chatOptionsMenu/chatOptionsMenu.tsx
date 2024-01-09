@@ -28,6 +28,7 @@ import {
   type Label as LabelType,
   type Chat,
   type Session,
+  User,
 } from "@/types/db";
 import { Input } from "@/_components/ui/input";
 import { Label } from "@/_components/ui/label";
@@ -48,7 +49,7 @@ const ChatOptionsMenu = ({
 }: {
   chat: Chat;
   labels: LabelType[] | undefined;
-  employees: BusinessEmployee[] | undefined;
+  employees: User[] | undefined;
   chatCurrentUser: ChatCurrentUser | undefined;
   session: Session | null | undefined;
 }) => {
@@ -72,7 +73,7 @@ const ChatOptionsMenu = ({
   };
 
   const assignableEmployees = employees?.filter(
-    (employee) => employee.userId !== chatCurrentUser?.employeeId,
+    (employee) => employee.id !== chatCurrentUser?.employeeId,
   );
 
   return (
@@ -138,7 +139,7 @@ const AssignChat = ({
   setOpen,
   chatId,
 }: {
-  employees: BusinessEmployee[] | undefined;
+  employees: User[] | undefined;
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   chatId: string;
@@ -172,22 +173,19 @@ const AssignChat = ({
                 {employees ? (
                   employees.length > 0 &&
                   employees.map((employee) => (
-                    <div
-                      key={employee.userId}
-                      className="flex items-center gap-2"
-                    >
+                    <div key={employee.id} className="flex items-center gap-2">
                       <Input
-                        id={employee.userId}
+                        id={employee.id}
                         type="radio"
                         className="h-[20px] w-[20px]"
-                        value={employee.userId}
+                        value={employee.id}
                         {...register("userId")}
                       />
                       <Label
-                        htmlFor={employee.userId}
+                        htmlFor={employee.id}
                         className="text-base font-normal leading-5"
                       >
-                        {employee.userName}
+                        {employee.firstName} {employee.lastName}
                       </Label>
                     </div>
                   ))

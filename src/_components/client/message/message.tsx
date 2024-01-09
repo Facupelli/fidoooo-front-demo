@@ -23,6 +23,19 @@ const MessageComponent = React.forwardRef<HTMLDivElement, MessageProps>(
   ({ message, business, messages, ...props }, ref) => {
     const image = getUserImage(business, message);
 
+    const getMessageTickColor = (messageStatusValue: MessageStatusType) => {
+      switch (messageStatusValue) {
+        case MessageStatusType.READ:
+          return "#5882F4";
+        case MessageStatusType.FAILED:
+          return "#cf2519";
+        default:
+          return "#5F5F5F";
+      }
+    };
+
+    const tickColor = getMessageTickColor(message.status?.value);
+
     if (isMessageFromBusiness(business, message)) {
       return (
         <div className="flex justify-end gap-2 text-f-black">
@@ -52,13 +65,7 @@ const MessageComponent = React.forwardRef<HTMLDivElement, MessageProps>(
 
             <div className="flex items-baseline justify-end gap-1.5 text-sm text-dark-gray">
               {timestampToHoursString(message.timestamp)}
-              <MessageTickIcon
-                stroke={
-                  message.status.value === MessageStatusType.READ
-                    ? "#5882F4"
-                    : "#5F5F5F"
-                }
-              />
+              <MessageTickIcon stroke={tickColor} />
             </div>
           </div>
         </div>

@@ -11,6 +11,8 @@ export const registerAsCollaboratorSchema = z
     birthday: z.string(),
     city: z.string().min(1, { message: "Este campo es requerido" }),
     country: z.string().min(1, { message: "Este campo es requerido" }),
+    position: z.string().min(1, { message: "Este campo es requerido" }),
+    dni: z.string().min(1, { message: "Este campo es requerido" }),
     email: z.string().email({ message: "El email no es válido" }),
     phoneNumber: z.string().refine(
       (value) => {

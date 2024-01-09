@@ -8,13 +8,17 @@ import { LoginForm } from "./interfaces";
 import { HeadingLarge } from "@/_components/ui/headings/headingLarge";
 import { TextField } from "@/_components/ui/textfield";
 import { Button } from "@/_components/ui/button";
+import { useState } from "react";
 
 const LoginForm = () => {
+  const [isLoading, setLoading] = useState(false);
   const { register, handleSubmit, reset } = useForm<LoginForm>();
   const router = useRouter();
 
   const submitLogin = async (data: LoginForm) => {
     try {
+      setLoading(true);
+
       const userCred = await signInWithEmailAndPassword(
         auth,
         data.email,
@@ -35,10 +39,12 @@ const LoginForm = () => {
 
       if (response.status === 200) {
         reset();
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,8 +67,8 @@ const LoginForm = () => {
         type="password"
         {...register("password")}
       />
-      <Button className="w-full" type="submit">
-        Ingresar
+      <Button className="w-full" type="submit" disabled={isLoading}>
+        {isLoading ? "cargando..." : "Ingresar"}
       </Button>
     </form>
   );

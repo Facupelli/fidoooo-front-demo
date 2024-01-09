@@ -39,7 +39,7 @@ export interface MessageModel {
     userId: string;
   };
   messageId: string;
-  timestamp: string;
+  timestamp: number;
   type: MessageType;
   updatedAt: string;
   status: {
@@ -123,3 +123,7 @@ interface DocumentMessage extends MessageModel {
     storageUrl?: string;
   };
 }
+
+export const MessageFromType = {
+  CUSTOMER: "customer",
+};

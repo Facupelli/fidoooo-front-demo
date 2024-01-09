@@ -72,9 +72,6 @@ export const getChatSession = async ({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: {
-        tags: ["get-chat-session"],
-      },
     },
   );
 
@@ -166,7 +163,6 @@ export const setBotIsActive = async ({
   );
 
   const chatResponse: ApiResponse<unknown> = await chatRawResponse.json();
-  revalidateTag("get-chat-session");
 
   return chatResponse;
 };
@@ -216,7 +212,7 @@ export const sendBotFirstNode = async ({
   });
 
   const chatRawResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/bot/first-node`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/bot/restart-bot`,
     {
       method: "POST",
       body,

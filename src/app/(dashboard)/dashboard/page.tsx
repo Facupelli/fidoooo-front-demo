@@ -34,11 +34,19 @@ export default async function Home() {
 
   const [user, business] = await Promise.all([userData, businessData]);
 
-  const chats = await api.chat.getChatsByChannel({
+  const chatsData = api.chat.getChatsByChannel({
     channelId: business.channels?.find(
       (channel) => channel.name === ChannelName.WHATSAPP,
     )?.id,
   });
+  const collaboratorsData = api.user.getCollaborators({
+    businessId: business.id,
+  });
+
+  const [chats, collaborators] = await Promise.all([
+    chatsData,
+    collaboratorsData,
+  ]);
 
   if (!user.business?.businessId) {
     return (
@@ -62,6 +70,7 @@ export default async function Home() {
         serverBusiness={business}
         chats={chats}
         userPicture={user.photoUrl}
+        collaborators={collaborators}
       />
     </main>
   );

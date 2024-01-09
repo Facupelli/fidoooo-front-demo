@@ -25,6 +25,33 @@ export const getUserById = async ({ userId }: { userId: string }) => {
   return user;
 };
 
+export const getCollaborators = async ({
+  businessId,
+}: {
+  businessId: string;
+}) => {
+  const token = await getAuthToken();
+
+  const collaboratorsRawResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user?businessId=${businessId}`,
+    {
+      cache: "force-cache",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: {
+        tags: ["get-collaborators"],
+      },
+    },
+  );
+
+  const collaboratorsData: ApiResponse<User[]> =
+    await collaboratorsRawResponse.json();
+  const collaborators = collaboratorsData.data;
+
+  return collaborators;
+};
+
 export const updateUser = async ({
   userId,
   user,
@@ -63,6 +90,7 @@ export const updateUser = async ({
 
   revalidateTag("business-by-admin-id");
   revalidateTag("user-by-id");
+  revalidateTag("get-collaborators");
 
   return userResponse;
 };

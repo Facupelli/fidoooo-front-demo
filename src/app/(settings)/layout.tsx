@@ -3,7 +3,7 @@ import "../../styles/globals.css";
 import { HeadingMedium } from "@/_components/ui/headings/headingMedium";
 import { SettingsTabs } from "@/_components/client/settingsTabs/settingsTabs";
 import { ArrowLeftIcon } from "@/icons";
-import { GoBackButton } from "@/_components/ui/goBackButton/goBackButton";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Fidooo Bot",
@@ -20,9 +20,9 @@ export default function SettingsLayout({
       <main className="mx-auto max-w-screen-2xl">
         <nav className="flex items-end gap-24">
           <div className="flex h-[60px] w-[210px] items-center gap-2 bg-primary-purple">
-            <GoBackButton className="bg-transparent text-white">
+            <Link href="/dashboard" className="bg-transparent text-white">
               <ArrowLeftIcon />
-            </GoBackButton>
+            </Link>
             <HeadingMedium className="text-white">Ajustes</HeadingMedium>
           </div>
 

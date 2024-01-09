@@ -93,7 +93,7 @@ const RegisterForm = () => {
       <div className="grid grid-cols-3 gap-10 lg:gap-[60px] ">
         <div className="col-span-3 flex flex-col gap-[15px] md:col-span-1">
           <HeadingMedium className="text-f-black">
-            Mis datos personales
+            Datos personales
           </HeadingMedium>
           <TextField
             label="Nombre"
@@ -154,7 +154,7 @@ const RegisterForm = () => {
 
         <div className="col-span-3 flex flex-col gap-[15px] md:col-span-1">
           <HeadingMedium className="text-f-black">
-            Datos de mi cuenta
+            Datos de la cuenta
           </HeadingMedium>
           <TextField
             label="Email"
@@ -162,6 +162,22 @@ const RegisterForm = () => {
             id="email"
             type="email"
             {...register("email")}
+            error={errors.email?.message}
+          />
+          <TextField
+            label="DNI"
+            placeholder="dni"
+            id="dni"
+            type="text"
+            {...register("dni")}
+            error={errors.email?.message}
+          />
+          <TextField
+            label="Cargo"
+            placeholder="cargo"
+            id="position"
+            type="text"
+            {...register("position")}
             error={errors.email?.message}
           />
           <TooltipProvider>

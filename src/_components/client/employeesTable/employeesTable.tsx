@@ -11,17 +11,21 @@ import {
   TableRow,
 } from "@/_components/ui/table";
 import useDebounce from "@/hooks/useDebounce";
-import { type Business } from "@/types/db";
+import type { User } from "@/types/db";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const EmployeesTable = ({ business }: { business: Business | undefined }) => {
+const EmployeesTable = ({
+  serverCollabs,
+}: {
+  serverCollabs: User[] | undefined;
+}) => {
   const { register, watch } = useForm<{ name: string }>();
   const search = useDebounce(watch("name", ""), 500);
-  const [collaborators] = useState(business?.employees ?? null);
+  const [collaborators] = useState(serverCollabs ?? null);
 
   const filteredCollaborators = collaborators?.filter((collaborator) =>
-    collaborator.userName.toLowerCase().includes(search.toLowerCase()),
+    collaborator.firstName.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -45,14 +49,14 @@ const EmployeesTable = ({ business }: { business: Business | undefined }) => {
         <TableBody>
           {filteredCollaborators !== undefined ? (
             filteredCollaborators?.map((employee) => (
-              <TableRow key={employee.userId}>
+              <TableRow key={employee.id}>
                 <TableCell className="font-medium">
-                  {employee.userName}
+                  {employee.firstName} {employee.lastName}
                 </TableCell>
                 <TableCell></TableCell>
                 <TableCell>Credit Card</TableCell>
                 <TableCell className="text-right">
-                  <LinkButton href={`team/collaborator/${employee.userId}`}>
+                  <LinkButton href={`team/collaborator/${employee.id}`}>
                     Editar
                   </LinkButton>
                 </TableCell>
